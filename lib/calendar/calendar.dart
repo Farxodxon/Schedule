@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:to_do/add_event/add_event_bloc.dart';
+import 'package:to_do/add_event/color_option.dart';
 import 'package:to_do/calendar/calendar_bloc.dart';
 import 'package:to_do/calendar/calendar_state.dart';
+import 'package:to_do/data.dart';
 
 class Calendar extends StatelessWidget {
   final bloc = CalendarBloc();
@@ -36,7 +38,7 @@ class Calendar extends StatelessWidget {
                               getWeekday(DateTime(state?.year ?? 0,
                                       state?.month ?? 0, state?.day ?? 0)
                                   .weekday),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xff292929),
@@ -49,7 +51,7 @@ class Calendar extends StatelessWidget {
                               children: [
                                 Text(
                                   "${state?.day ?? 0} ",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xff292929),
@@ -57,7 +59,7 @@ class Calendar extends StatelessWidget {
                                 ),
                                 Text(
                                   getMonthName(state?.month ?? 0),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xff292929),
@@ -65,7 +67,7 @@ class Calendar extends StatelessWidget {
                                 ),
                                 Text(
                                   " ${state?.year ?? 0}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xff292929),
@@ -82,7 +84,7 @@ class Calendar extends StatelessWidget {
                       )
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 35,
                   ),
                   Row(
@@ -90,7 +92,7 @@ class Calendar extends StatelessWidget {
                       Expanded(
                           child: Text(
                         getMonthName(state?.month ?? 0),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: Color(0xff292929),
@@ -98,16 +100,16 @@ class Calendar extends StatelessWidget {
                         textAlign: TextAlign.start,
                       )),
                       CircleAvatar(
-                          backgroundColor: Color(0xFFEFEFEF),
+                          backgroundColor: const Color(0xFFEFEFEF),
                           radius: 12.5,
                           child: InkWell(
                               onTap: () => bloc.previousMonth(),
                               child: SvgPicture.asset("assets/icon_left.svg"))),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       CircleAvatar(
-                        backgroundColor: Color(0xFFEFEFEF),
+                        backgroundColor: const Color(0xFFEFEFEF),
                         radius: 12.5,
                         child: InkWell(
                           onTap: () => bloc.nextMonth(),
@@ -116,7 +118,7 @@ class Calendar extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   GridView.count(
@@ -153,7 +155,7 @@ class Calendar extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Schedule",
                         style: TextStyle(
                           fontSize: 14,
@@ -167,15 +169,15 @@ class Calendar extends StatelessWidget {
                               arguments: AddEventBloc());
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 8,
                             horizontal: 22,
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Color(0xFF009FEE),
+                            color: const Color(0xFF009FEE),
                           ),
-                          child: Text(
+                          child: const Text(
                             "+ Add Event",
                             style: TextStyle(
                               fontSize: 10,
@@ -187,10 +189,14 @@ class Calendar extends StatelessWidget {
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 18,
+                  ),
                   ListView(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    children: List.generate(3, (index) => getItemEvent()),
+                    children: List.generate(
+                        3, (index) => getItemEvent(events[index])),
                   )
                 ],
               ),
@@ -199,26 +205,26 @@ class Calendar extends StatelessWidget {
         });
   }
 
-  Widget getItemEvent() {
+  Widget getItemEvent(AddEventState addEventState) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 7.0),
+      padding: const EdgeInsets.symmetric(vertical: 7.0),
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Color(0xFF009FEE).withOpacity(0.2)),
+            color: addEventState.colorOption.color.withOpacity(0.2)),
         child: Column(
           children: [
             Container(
               height: 10,
               decoration: BoxDecoration(
-                  color: Color(0xFF009FEE),
-                  borderRadius: BorderRadius.only(
+                  color: addEventState.colorOption.color,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10),
                   )),
             ),
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 bottom: 12,
                 left: 12,
                 right: 12,
@@ -229,36 +235,38 @@ class Calendar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Watching Football",
+                    addEventState.name,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xff056EA1),
+                      color: addEventState.colorOption.textColor,
                     ),
                   ),
                   Text(
-                    "Manchester United vs Arsenal (Premiere League)",
+                    addEventState.description,
                     style: TextStyle(
                       fontSize: 8,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xff056EA1),
+                      color: addEventState.colorOption.textColor,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Row(
                     children: [
                       getItem(
-                        "17:00 - 18:30",
+                        addEventState.dateTime.hour.toString(),
                         "assets/icon_time.svg",
-                        Color(0xff056EA1),
+                        addEventState.colorOption.textColor,
                       ),
-                      getItem(
-                        "Stamford Bridge",
-                        "assets/icon_location.svg",
-                        Color(0xff056EA1),
-                      )
+                      addEventState.location != null
+                          ? getItem(
+                              addEventState.location!,
+                              "assets/icon_location.svg",
+                              addEventState.colorOption.textColor,
+                            )
+                          : const SizedBox()
                     ],
                   ),
                 ],
