@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:to_do/add_event/add_event_bloc.dart';
 import 'package:to_do/add_event/color_option.dart';
-import 'package:to_do/calendar/calendar_bloc.dart';
 
 class AddEvent extends StatelessWidget {
   AddEvent({super.key});
